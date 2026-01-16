@@ -1,0 +1,19 @@
+# Safe defaults
+scene_detector: adaptive
+scene_threshold: 27.0
+min_scene_len_frames: 15
+
+frames_per_scene: 1
+scene_edge_epsilon_sec: 0.15
+
+enable_dedup: true
+max_hamming: 6
+
+enable_blur_filter: false
+blur_var_threshold: 80.0
+
+model_name: ViT-B-32
+pretrained: laion2b_s34b_b79k
+device: cpu
+
+batch_size: 32

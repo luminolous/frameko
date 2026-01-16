@@ -1,0 +1,19 @@
+# Anime-ish: slightly stronger dedup, optional blur filtering off by default
+scene_detector: adaptive
+scene_threshold: 25.0
+min_scene_len_frames: 12
+
+frames_per_scene: 1
+scene_edge_epsilon_sec: 0.12
+
+enable_dedup: true
+max_hamming: 5
+
+enable_blur_filter: false
+blur_var_threshold: 90.0
+
+model_name: ViT-B-32
+pretrained: laion2b_s34b_b79k
+device: cpu
+
+batch_size: 32

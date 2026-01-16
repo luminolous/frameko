@@ -1,14 +1,5 @@
-"""frameko: video → frames → embeddings → vector search (notebook-first)."""
+from .core import Frameko, SearchResult
+from .config import FramekoConfig
 
-from __future__ import annotations
-
-from importlib.metadata import PackageNotFoundError, version
-
-from .core import Frameko
-
-try:
-    __version__ = version("frameko")
-except PackageNotFoundError:
-    __version__ = "0.0.0"
-
-__all__ = ["Frameko", "__version__"]
+__all__ = ["Frameko", "FramekoConfig", "SearchResult"]
+__version__ = "0.1.0"
