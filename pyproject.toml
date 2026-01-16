@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling>=1.24.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "frameko"
+version = "0.1.0"
+description = "Notebook-first toolkit: video -> informative frames -> CLIP embeddings -> vector index -> search"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Frameko Contributors" }]
+keywords = ["video", "frames", "anime", "clip", "openclip", "faiss", "vector-search"]
+
+dependencies = [
+  "numpy>=1.24",
+  "Pillow>=10.0",
+  "PyYAML>=6.0",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+faiss = ["faiss-cpu>=1.7.4"]
+qdrant = ["qdrant-client>=1.10.0"]
+scenedetect = ["scenedetect[opencv]>=0.6.6"]
+embed = ["open-clip-torch>=2.3.1", "torch>=2.0"]
+dedup = ["ImageHash>=4.3.0"]
+dev = ["pytest>=8.0", "ruff>=0.5.0", "mypy>=1.10", "ipykernel>=6.29"]
+
+[project.urls]
+Homepage = "https://github.com/luminolous/frameko"
+Issues = "https://github.com/luminolous/frameko/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/frameko"]
+include = [
+  "src/frameko/presets/*.yaml",
+  "src/frameko/store/schema.sql",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
