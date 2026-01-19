@@ -1,4 +1,4 @@
-from .core import Frameko, SearchResult
+from .core import Frameko
 from .config import FramekoConfig
 
 __all__ = ["Frameko", "FramekoConfig", "SearchResult"]
