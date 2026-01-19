@@ -11,9 +11,3 @@ max_hamming: 6
 
 enable_blur_filter: false
 blur_var_threshold: 80.0
-
-model_name: ViT-B-32
-pretrained: laion2b_s34b_b79k
-device: cpu
-
-batch_size: 32

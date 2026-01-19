@@ -6,7 +6,7 @@ from typing import List, Optional, Tuple
 from ..errors import DependencyMissingError
 
 
-Scene = Tuple[float, float]  # (start_sec, end_sec)
+Scene = Tuple[float, float]
 
 
 def detect_scenes(
@@ -25,7 +25,6 @@ def detect_scenes(
         from scenedetect.scene_manager import SceneManager
         from scenedetect.detectors import ContentDetector, AdaptiveDetector
     except Exception:
-        # Soft-fail: return empty list (caller will fallback)
         return []
 
     video_path = Path(video_path)
@@ -37,7 +36,6 @@ def detect_scenes(
     if det == "content":
         sm.add_detector(ContentDetector(threshold=threshold, min_scene_len=min_scene_len_frames))
     else:
-        # default adaptive
         sm.add_detector(AdaptiveDetector(threshold=threshold, min_scene_len=min_scene_len_frames))
 
     sm.detect_scenes(video)

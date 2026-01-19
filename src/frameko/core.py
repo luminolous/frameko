@@ -11,25 +11,12 @@ import numpy as np
 
 from .config import FramekoConfig
 from .errors import DependencyMissingError
-from .store.metadata_sqlite import MetadataStore
 from .video.ffmpeg import ensure_ffmpeg, ensure_ffprobe, probe_video
 from .scenes.scenedetect_adapter import detect_scenes
 from .pipelines.sampling import sample_timestamps
 from .video.extract import extract_frame
 from .pipelines.dedup import dhash_uint64, hamming_distance
 from .pipelines.quality import variance_of_laplacian
-from .index.base import VectorBackend
-from .index.faiss_backend import FaissBackend
-
-
-@dataclass
-class SearchResult:
-    frame_id: int
-    video_id: str
-    t_sec: float
-    frame_path: str
-    score: float
-    scene_idx: Optional[int] = None
 
 
 class Frameko:
@@ -50,42 +37,12 @@ class Frameko:
         self.cfg_path = self.index_dir / "config.json"
         self.cfg.save_json(self.cfg_path)
 
-        self.store = MetadataStore(self.index_dir / "metadata.sqlite")
-
         # External tools for ingest
         ensure_ffmpeg()
         ensure_ffprobe()
 
         # Embedding
         self._embedder = None
-
-        # Vector backend
-        backend_kwargs = backend_kwargs or {}
-        if backend == "faiss":
-            self.backend: VectorBackend = FaissBackend(self.index_dir / "faiss.index", **backend_kwargs)
-        elif backend == "qdrant":
-            from .index.qdrant_backend import QdrantBackend
-
-            self.backend = QdrantBackend(**backend_kwargs)
-        else:
-            raise ValueError(f"Unknown backend: {backend}")
-
-    def _get_embedder(self):
-        if self._embedder is None:
-            try:
-                from .embed.openclip import OpenCLIPEmbedder
-            except Exception as e:
-                raise DependencyMissingError(
-                    "Embedding requires extras: pip install -e '.[clip]'"
-                ) from e
-            self._embedder = OpenCLIPEmbedder(
-                model_name=self.cfg.model_name,
-                pretrained=self.cfg.pretrained,
-                device=self.cfg.device,
-                normalize=self.cfg.normalize_vectors,
-                batch_size=self.cfg.batch_size,
-            )
-        return self._embedder
 
     def ingest(
         self,
@@ -205,35 +162,6 @@ class Frameko:
         self.backend.save()
 
         return video_id
-
-    def search_image(
-        self,
-        image_path: Union[str, Path],
-        topk: int = 20,
-        where: Optional[Dict[str, Any]] = None,
-    ) -> List[SearchResult]:
-        embedder = self._get_embedder()
-        q = embedder.encode_images([str(image_path)])
-        return self._search_vec(q[0], topk=topk, where=where)
-
-    def _search_vec(self, query_vec: np.ndarray, topk: int, where: Optional[Dict[str, Any]]):
-        ids, scores = self.backend.search(query_vec=query_vec, topk=topk, where=where)
-        results: List[SearchResult] = []
-        for fid, sc in zip(ids, scores):
-            meta = self.store.get_frame(int(fid))
-            if meta is None:
-                continue
-            results.append(
-                SearchResult(
-                    frame_id=int(fid),
-                    video_id=str(meta["video_id"]),
-                    t_sec=float(meta["t_sec"]),
-                    frame_path=str(meta["frame_path"]),
-                    score=float(sc),
-                    scene_idx=int(meta["scene_idx"]) if meta.get("scene_idx") is not None else None,
-                )
-            )
-        return results
 
     def close(self) -> None:
         try:

@@ -34,17 +34,6 @@ class FramekoConfig:
     image_format: str = "jpg"
     jpeg_quality: int = 2  # ffmpeg -q:v (lower is better)
 
-    # Embedding
-    model_name: str = "ViT-B-32"
-    pretrained: str = "laion2b_s34b_b79k"
-    device: str = "cpu"  # "cpu" or "cuda"
-
-    # Index
-    normalize_vectors: bool = True
-
-    # Performance
-    batch_size: int = 32
-
     extra: Dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
