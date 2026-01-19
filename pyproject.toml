@@ -28,10 +28,10 @@ dependencies = [
   "Pillow>=10",
   "PyYAML>=6",
   "tqdm>=4.66",
+  scenedetect[opencv]>=0.6.6,
 ]
 
 [project.optional-dependencies]
-scenedetect = ["scenedetect[opencv]>=0.6.6"]
 dev = ["pytest>=7", "ruff>=0.4", "mypy>=1.8"]
 
 [project.urls]
