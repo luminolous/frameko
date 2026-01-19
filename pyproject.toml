@@ -30,23 +30,6 @@ dependencies = [
   "tqdm>=4.66",
 ]
 
-[project.optional-dependencies]
-# Embedding
-clip = [
-  "torch>=2.1",
-  "open-clip-torch>=2.24.0",
-]
-# Scene detection
-scenedetect = [
-  "scenedetect[opencv]>=0.6.4",
-]
-# Vector backends
-faiss = [
-  "faiss-cpu>=1.7.4",
-]
-qdrant = [
-  "qdrant-client>=1.8.0",
-]
 # Dev tooling
 dev = [
   "pytest>=7.4",
