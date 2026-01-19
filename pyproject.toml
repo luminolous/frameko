@@ -34,14 +34,6 @@ dependencies = [
 scenedetect = ["scenedetect[opencv]>=0.6.6"]
 dev = ["pytest>=7", "ruff>=0.4", "mypy>=1.8"]
 
-# Dev tooling
-dev = [
-  "pytest>=7.4",
-  "ruff>=0.5",
-  "mypy>=1.7",
-  "ipykernel>=6.29",
-]
-
 [project.urls]
 Homepage = "https://github.com/luminolous/frameko"
 Repository = "https://github.com/luminolous/frameko"
