@@ -5,12 +5,12 @@ build-backend = "hatchling.build"
 [project]
 name = "frameko"
 version = "0.1.0"
-description = "Notebook-first toolkit: video -> informative frames -> OpenCLIP embeddings -> vector search (FAISS/Qdrant)."
+description = "Notebook frame to image toolkit."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [
-  { name = "Your Name", email = "you@example.com" }
+  { name = "Lumy"}
 ]
 keywords = ["video", "frames", "anime", "clip", "openclip", "faiss", "qdrant", "search"]
 classifiers = [
@@ -56,9 +56,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourname/frameko"
-Repository = "https://github.com/yourname/frameko"
-Issues = "https://github.com/yourname/frameko/issues"
+Homepage = "https://github.com/luminolous/frameko"
+Repository = "https://github.com/luminolous/frameko"
+Issues = "https://github.com/luminolous/frameko/issues"
 
 [tool.hatch.build]
 include = [
