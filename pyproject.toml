@@ -28,7 +28,7 @@ dependencies = [
   "Pillow>=10",
   "PyYAML>=6",
   "tqdm>=4.66",
-  scenedetect[opencv]>=0.6.6,
+  "scenedetect[opencv]>=0.6.6",
 ]
 
 [project.optional-dependencies]
