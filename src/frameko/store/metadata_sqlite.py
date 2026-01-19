@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+import ctypes
 import hashlib
 import sqlite3
 import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+def _to_i64(x):
+    if x is None:
+        return None
+    return ctypes.c_int64(int(x)).value
 
 def _stable_video_id(path: str, info: Dict[str, Any]) -> str:
     # Simple stable-ish id: hash of absolute path + size + duration
@@ -73,6 +78,8 @@ class MetadataStore:
         blur_var: Optional[float],
     ) -> int:
         now = time.time()
+        dhash = _to_i64(dhash)
+        
         cur = self.conn.execute(
             """
             INSERT INTO frames(video_id, t_sec, scene_idx, frame_path, dhash, blur_var, created_at)
