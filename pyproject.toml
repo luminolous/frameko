@@ -24,11 +24,15 @@ classifiers = [
 ]
 
 dependencies = [
-  "numpy>=1.23",
-  "pillow>=10.0",
-  "pyyaml>=6.0",
+  "numpy>=1.24",
+  "Pillow>=10",
+  "PyYAML>=6",
   "tqdm>=4.66",
 ]
+
+[project.optional-dependencies]
+scenedetect = ["scenedetect[opencv]>=0.6.6"]
+dev = ["pytest>=7", "ruff>=0.4", "mypy>=1.8"]
 
 # Dev tooling
 dev = [
