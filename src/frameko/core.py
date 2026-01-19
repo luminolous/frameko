@@ -33,15 +33,6 @@ class SearchResult:
 
 
 class Frameko:
-    """Main user-facing API.
-
-    Workflow:
-      fk = Frameko(index_dir='store', backend='faiss', preset='default')
-      fk.ingest('video.mp4')
-      fk.search_text('query')
-      fk.search_image('query.png')
-    """
-
     def __init__(
         self,
         index_dir: Union[str, Path],
@@ -214,16 +205,6 @@ class Frameko:
         self.backend.save()
 
         return video_id
-
-    def search_text(
-        self,
-        query: str,
-        topk: int = 20,
-        where: Optional[Dict[str, Any]] = None,
-    ) -> List[SearchResult]:
-        embedder = self._get_embedder()
-        q = embedder.encode_text(query)
-        return self._search_vec(q, topk=topk, where=where)
 
     def search_image(
         self,
