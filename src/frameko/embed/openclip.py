@@ -37,12 +37,10 @@ class OpenCLIPEmbedder:
         model, _, preprocess = open_clip.create_model_and_transforms(
             model_name, pretrained=pretrained
         )
-        tokenizer = open_clip.get_tokenizer(model_name)
 
         self.model = model.to(device)
         self.model.eval()
         self.preprocess = preprocess
-        self.tokenizer = tokenizer
 
     def _l2norm(self, x: np.ndarray) -> np.ndarray:
         eps = 1e-12
@@ -69,13 +67,3 @@ class OpenCLIPEmbedder:
             out.append(feats)
 
         return np.concatenate(out, axis=0)
-
-    def encode_text(self, text: str) -> np.ndarray:
-        torch = self.torch
-        toks = self.tokenizer([text]).to(self.device)
-        with torch.no_grad():
-            feats = self.model.encode_text(toks)
-        v = feats.detach().cpu().numpy().astype(np.float32)[0]
-        if self.normalize:
-            v = self._l2norm(v[None, :])[0]
-        return v
