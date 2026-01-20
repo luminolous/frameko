@@ -45,10 +45,10 @@ apt-get install -y ffmpeg -qq
 from frameko import Frameko, FramekoConfig
 
 cfg = FramekoConfig.load_preset("default")
-fk = Frameko(index_dir="/content/frameko_storage", config=cfg)
+fk = Frameko(index_dir="/frameko_storage", config=cfg)
 
 video_id = fk.ingest(
-    "/content/your_video.mp4",
+    "/your_video.mp4",
     detector="content",
     threshold=20.0,
     min_scene_len_frames=10,
