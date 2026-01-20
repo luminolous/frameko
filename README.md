@@ -48,7 +48,7 @@ cfg = FramekoConfig.load_preset("default")
 fk = Frameko(index_dir="/content/frameko_storage", config=cfg)
 
 video_id = fk.ingest(
-    "/content/How Alya fall in love with Kuze  Alya Sometimes Hides Her Feelings in Russian.mp4",
+    "/content/your_video.mp4",
     detector="content",
     threshold=20.0,
     min_scene_len_frames=10,
