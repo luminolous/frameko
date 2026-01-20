@@ -26,6 +26,5 @@ def sample_timestamps(
             out.append((s + dur / 2.0, idx))
             out.append((max(s, e - edge_eps), idx))
         else:
-            # fallback
             out.append((s + dur / 2.0, idx))
     return out

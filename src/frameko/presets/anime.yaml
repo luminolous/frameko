@@ -1,4 +1,3 @@
-# Anime-ish: slightly stronger dedup, optional blur filtering off by default
 scene_detector: adaptive
 scene_threshold: 25.0
 min_scene_len_frames: 12

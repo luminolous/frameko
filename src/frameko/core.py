@@ -48,7 +48,7 @@ class Frameko:
         self.cfg_path = self.index_dir / "config.json"
         self.cfg.save_json(self.cfg_path)
 
-        # Metadata output (replacement for sqlite store)
+        # Metadata output
         self.videos_jsonl = self.index_dir / "videos.jsonl"
         self.frames_jsonl = self.index_dir / "frames.jsonl"
 
@@ -56,20 +56,18 @@ class Frameko:
         ensure_ffmpeg()
         ensure_ffprobe()
 
-        # Embedding / backend (optional, keep if you still use index/search)
+        # Embedding / backend (optional)
         self._embedder = None
         # NOTE: assuming elsewhere in your code you set:
         #   self.backend = ...
         # If you don't use backend anymore, you can set self.backend = None.
 
-    # ---------- helpers (no sqlite needed) ----------
+    # helpers
     def _make_video_id(self, video_path: Path) -> str:
-        # unique-ish but stable format; collisions are extremely unlikely
         h = hashlib.blake2b(str(video_path.resolve()).encode("utf-8"), digest_size=6).hexdigest()
         return f"v_{int(time.time())}_{h}"
 
     def _frame_uid64(self, video_id: str, frame_idx: int) -> int:
-        # deterministic 64-bit int for vector IDs / metadata keys
         b = f"{video_id}:{frame_idx}".encode("utf-8")
         digest = hashlib.blake2b(b, digest_size=8).digest()
         return int.from_bytes(digest, byteorder="big", signed=False)
@@ -79,7 +77,7 @@ class Frameko:
         with path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(obj, ensure_ascii=False) + "\n")
 
-    # ---------- main ----------
+    # main
     def ingest(
         self,
         video_path: Union[str, Path],
@@ -90,15 +88,11 @@ class Frameko:
         min_scene_len_frames: Optional[int] = None,
         limit_scenes: Optional[int] = None,
     ) -> str:
-        """Ingest a video and (optionally) add frames to the vector index.
-
-        Returns: video_id
-        """
         video_path = Path(video_path)
         info = probe_video(video_path)
         video_id = self._make_video_id(video_path)
 
-        # save "video table" record (replaces store.upsert_video)
+        # save "video table" record
         self._append_jsonl(
             self.videos_jsonl,
             {
@@ -109,7 +103,7 @@ class Frameko:
             },
         )
 
-        # Detect scenes (optional)
+        # Detect scenes
         det = detector or self.cfg.scene_detector
         if det == "none":
             scenes = [(0.0, float(info.get("duration", 0.0)))]
@@ -164,7 +158,7 @@ class Frameko:
                     continue
                 seen_hashes.append(dh)
 
-            # Blur filter (optional)
+            # Blur filter
             blur_v: Optional[float]
             if self.cfg.enable_blur_filter:
                 v = float(variance_of_laplacian(out_path))
@@ -207,7 +201,7 @@ class Frameko:
         if not extracted:
             return video_id
 
-        # ---- OPTIONAL: embed + upsert into backend (no sqlite required) ----
+        # OPTIONAL: embed + upsert into backend
         if getattr(self, "backend", None) is not None:
             embedder = self._get_embedder()
             paths = [r.frame_path for r in extracted]

@@ -20,7 +20,7 @@ def variance_of_laplacian(image_path: Union[str, Path]) -> float:
     # Laplacian kernel
     k = np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]], dtype=np.float32)
 
-    # Convolution (valid padding via manual padding)
+    # Convolution
     padded = np.pad(arr, ((1, 1), (1, 1)), mode="edge")
     out = (
         k[0, 0] * padded[:-2, :-2]

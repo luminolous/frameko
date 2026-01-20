@@ -12,10 +12,6 @@ def extract_frame(
     out_path: Path,
     jpeg_quality: int = 2,
 ) -> None:
-    """Extract a single frame at timestamp t_sec using ffmpeg.
-
-    Uses `-ss` seek + `-frames:v 1` for determinism.
-    """
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -32,7 +28,6 @@ def extract_frame(
         "1",
     ]
 
-    # Quality for jpeg
     if out_path.suffix.lower() in {".jpg", ".jpeg"}:
         cmd += ["-q:v", str(int(jpeg_quality))]
 

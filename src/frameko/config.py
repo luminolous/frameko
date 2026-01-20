@@ -18,7 +18,7 @@ class FramekoConfig:
     min_scene_len_frames: int = 15
 
     # Sampling
-    frames_per_scene: int = 1  # 1 or 3 (MVP)
+    frames_per_scene: int = 1  # 1 or 3
     scene_edge_epsilon_sec: float = 0.15
 
     # Dedup

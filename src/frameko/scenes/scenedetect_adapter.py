@@ -16,10 +16,6 @@ def detect_scenes(
     min_scene_len_frames: int = 15,
     limit_scenes: Optional[int] = None,
 ) -> List[Scene]:
-    """Detect scenes using PySceneDetect if installed.
-
-    Returns list of (start_sec, end_sec). If scenedetect is missing, returns empty list.
-    """
     try:
         from scenedetect import open_video
         from scenedetect.scene_manager import SceneManager
