@@ -12,7 +12,7 @@ It’s especially handy when you want a compact set of frames from long videos (
 - **Sampling**: extract `1` (mid) or `3` (start/mid/end) frames per detected scene.
 - **Fast extraction** via **ffmpeg** (`ffmpeg -ss ... -frames:v 1`).
 - **Optional dedup** using perceptual **dHash** + Hamming distance.
-- **Optional blur filter** using **variance of Laplacian** (no OpenCV required for the metric).
+- **Optional blur filter** using **variance of Laplacian**.
 - **Automatic metadata** output (`videos.jsonl`, `frames.jsonl`) + config snapshot (`config.json`).
 
 ---
