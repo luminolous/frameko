@@ -26,14 +26,20 @@ It’s especially handy when you want a compact set of frames from long videos (
 
 ### How to use (Python Notebook)
 
+1. First, you need to install this toolkit in your environment. You can copy this command and paste it in your notebook cell.
+
 ```bash
 pip install -q "frameko @ git+https://github.com/luminolous/frameko.git"
 ```
+
+2. If `ffmpeg` isn't installed in your environment, you'll need to install it first. Copy this command below into a cell in your notebook to install `ffmpeg`.
 
 ```bash
 apt-get update -qq
 apt-get install -y ffmpeg -qq
 ```
+
+3. Next, you can use the code below to run the program. You can adjust the parameters according to the video you want to process.
 
 ```python
 from frameko import Frameko, FramekoConfig
