@@ -81,6 +81,10 @@ frameko_storage/
 - `frames.jsonl`: one JSON line per extracted frame (timestamp, scene index, file path, dhash, blur score, ...)
 - `config.json`: the config snapshot used for this run
 
+These are sample frames extracted from an animation.
+
+![Example result](assets/example_result.png)
+
 ---
 
 ## `ingest(...)` Parameters
