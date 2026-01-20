@@ -24,18 +24,15 @@ It’s especially handy when you want a compact set of frames from long videos (
 - Python **>= 3.9**
 - **ffmpeg** + **ffprobe** available in your PATH
 
-### How to use
+### How to use (Python Notebook)
 
 ```bash
-git clone https://github.com/luminolous/frameko.git
-cd frameko
-pip install -e .
+pip install -q "frameko @ git+https://github.com/luminolous/frameko.git"
 ```
 
 ```bash
-apt-get update -y
-apt-get install -y ffmpeg
-pip install -e .
+apt-get update -qq
+apt-get install -y ffmpeg -qq
 ```
 
 ```python
@@ -56,7 +53,7 @@ video_id = fk.ingest(
 print("video_id:", video_id)
 ```
 
-**Note:** `limit_scenes=None` means **no cap on the number of detected scenes** (i.e., process the whole video). Frameko still extracts **`frames_per_scene` frames per scene**, not *every frame in the video*.
+> **Note:** `limit_scenes=None` means **no cap on the number of detected scenes** (i.e., process the whole video). Frameko still extracts **`frames_per_scene` frames per scene**, not *every frame in the video*.
 
 ### Outputs
 
