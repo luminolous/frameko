@@ -61,6 +61,17 @@ print("video_id:", video_id)
 
 > **Note:** `limit_scenes=None` means **no cap on the number of detected scenes** (i.e., process the whole video). Frameko still extracts **`frames_per_scene` frames per scene**, not *every frame in the video*.
 
+If you want to scrape image based on per second, you can use this parameter for frameko:
+
+```python
+video_id = fk.ingest(
+  "/your_video.mp4", 
+  sampling_mode="seconds", 
+  every_sec=1.0, 
+  detector="none"
+)
+```
+
 ### Outputs
 
 Everything is written under your `index_dir`:
