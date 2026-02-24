@@ -13,7 +13,7 @@ import numpy as np
 from .config import FramekoConfig
 from .video.ffmpeg import ensure_ffmpeg, ensure_ffprobe, probe_video
 from .scenes.scenedetect_adapter import detect_scenes
-from .pipelines.sampling import sample_timestamps
+from .pipelines.sampling import sample_timestamps, sample_every_seconds
 from .video.extract import extract_frame
 from .pipelines.dedup import dhash_uint64, hamming_distance
 from .pipelines.quality import variance_of_laplacian
@@ -87,6 +87,10 @@ class Frameko:
         threshold: Optional[float] = None,
         min_scene_len_frames: Optional[int] = None,
         limit_scenes: Optional[int] = None,
+        sampling_mode: Optional[str] = None,
+        every_sec: Optional[float] = None,
+        start_sec: Optional[float] = None,
+        end_sec: Optional[float] = None,
     ) -> str:
         video_path = Path(video_path)
         info = probe_video(video_path)
@@ -122,12 +126,23 @@ class Frameko:
 
         fpp = frames_per_scene if frames_per_scene is not None else self.cfg.frames_per_scene
 
-        # Sample timestamps
-        ts = sample_timestamps(
-            scenes,
-            frames_per_scene=fpp,
-            edge_eps=self.cfg.scene_edge_epsilon_sec,
-        )
+        mode = sampling_mode or getattr(self.cfg, "sampling_mode", "scene")
+
+        if mode in {"seconds", "interval"}:
+            ts = sample_every_seconds(
+                duration=float(info.get("duration", 0.0)),
+                every_sec=float(every_sec if every_sec is not None else getattr(self.cfg, "every_sec", 1.0)),
+                scenes=scenes,
+                start_sec=float(start_sec if start_sec is not None else getattr(self.cfg, "start_sec", 0.0)),
+                end_sec=(float(end_sec) if end_sec is not None else getattr(self.cfg, "end_sec", None)),
+            )
+        else:
+            fpp = frames_per_scene if frames_per_scene is not None else self.cfg.frames_per_scene
+            ts = sample_timestamps(
+                scenes,
+                frames_per_scene=fpp,
+                edge_eps=self.cfg.scene_edge_epsilon_sec,
+            )
 
         extracted: List[ExtractedFrame] = []
         seen_hashes: List[int] = []

@@ -34,6 +34,11 @@ class FramekoConfig:
     image_format: str = "jpg"
     jpeg_quality: int = 2  # ffmpeg -q:v (lower is better)
 
+    sampling_mode: str = "scene"   # "scene" | "seconds"
+    every_sec: float = 1.0         # dipakai kalau sampling_mode=="seconds"
+    start_sec: float = 0.0
+    end_sec: Optional[float] = None
+
     extra: Dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
