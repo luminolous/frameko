@@ -20,6 +20,7 @@ class FramekoConfig:
     # Sampling
     frames_per_scene: int = 1  # 1 or 3
     scene_edge_epsilon_sec: float = 0.15
+    end_padding_sec: float = 0.25
 
     # Dedup
     enable_dedup: bool = True
@@ -32,10 +33,10 @@ class FramekoConfig:
 
     # Extraction
     image_format: str = "jpg"
-    jpeg_quality: int = 2  # ffmpeg -q:v (lower is better)
+    jpeg_quality: int = 2
 
     sampling_mode: str = "scene"   # "scene" | "seconds"
-    every_sec: float = 1.0         # dipakai kalau sampling_mode=="seconds"
+    every_sec: float = 1.0
     start_sec: float = 0.0
     end_sec: Optional[float] = None
 

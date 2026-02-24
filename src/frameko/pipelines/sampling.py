@@ -1,6 +1,46 @@
 from __future__ import annotations
 from typing import List, Sequence, Tuple, Optional
 
+def sample_every_seconds(
+    *,
+    duration: float,
+    every_sec: float = 1.0,
+    scenes: Optional[Sequence[Tuple[float, float]]] = None,
+    start_sec: float = 0.0,
+    end_sec: Optional[float] = None,
+    end_padding_sec: float = 0.25,
+) -> List[Tuple[float, int]]:
+    if every_sec <= 0:
+        raise ValueError("every_sec must be > 0")
+
+    start = max(0.0, float(start_sec))
+
+    end = float(duration) if end_sec is None else min(float(end_sec), float(duration))
+    end = min(end, max(0.0, float(duration) - float(end_padding_sec)))
+    end = max(start, end)
+
+    ts: List[float] = []
+    t = start
+    while t < end:
+        ts.append(t)
+        t += float(every_sec)
+
+    if not scenes:
+        return [(x, 0) for x in ts]
+
+    out: List[Tuple[float, int]] = []
+    j = 0
+    n = len(scenes)
+    for x in ts:
+        while j < n and x >= scenes[j][1]:
+            j += 1
+        if j >= n:
+            break
+        if x < scenes[j][0]:
+            continue
+        out.append((x, j))
+    return out
+
 
 def sample_timestamps(
     scenes: Sequence[Tuple[float, float]],
@@ -26,45 +66,4 @@ def sample_timestamps(
             out.append((max(s, e - edge_eps), idx))
         else:
             out.append((s + dur / 2.0, idx))
-    return out
-
-def sample_every_seconds(
-    *,
-    duration: float,
-    every_sec: float = 1.0,
-    scenes: Optional[Sequence[Tuple[float, float]]] = None,
-    start_sec: float = 0.0,
-    end_sec: Optional[float] = None,
-) -> List[Tuple[float, int]]:
-    """Return list of (t_sec, scene_idx) sampled every N seconds.
-    If scenes is provided, scene_idx is assigned based on which scene contains t_sec.
-    """
-    if every_sec <= 0:
-        raise ValueError("every_sec must be > 0")
-
-    end = duration if end_sec is None else min(float(end_sec), float(duration))
-    t = max(0.0, float(start_sec))
-
-    # generate global timestamps
-    ts: List[float] = []
-    while t < end:
-        ts.append(t)
-        t += float(every_sec)
-
-    if not scenes:
-        return [(x, 0) for x in ts]
-
-    # map each timestamp to scene index (scenes assumed sorted)
-    out: List[Tuple[float, int]] = []
-    j = 0
-    n = len(scenes)
-    for x in ts:
-        while j < n and x >= scenes[j][1]:
-            j += 1
-        if j >= n:
-            break
-        # if there is a gap (rare), skip until we enter a scene
-        if x < scenes[j][0]:
-            continue
-        out.append((x, j))
     return out

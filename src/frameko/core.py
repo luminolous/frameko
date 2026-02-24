@@ -56,7 +56,6 @@ class Frameko:
         ensure_ffmpeg()
         ensure_ffprobe()
 
-        # Embedding / backend (optional)
         self._embedder = None
         # NOTE: assuming elsewhere in your code you set:
         #   self.backend = ...
@@ -94,9 +93,9 @@ class Frameko:
     ) -> str:
         video_path = Path(video_path)
         info = probe_video(video_path)
+        duration = float(info.get("duration", 0.0))
         video_id = self._make_video_id(video_path)
 
-        # save "video table" record
         self._append_jsonl(
             self.videos_jsonl,
             {
@@ -125,19 +124,26 @@ class Frameko:
                 scenes = [(0.0, float(info.get("duration", 0.0)))]
 
         fpp = frames_per_scene if frames_per_scene is not None else self.cfg.frames_per_scene
-
         mode = sampling_mode or getattr(self.cfg, "sampling_mode", "scene")
 
         if mode in {"seconds", "interval"}:
+            pad = float(getattr(self.cfg, "end_padding_sec", 0.25))
+            effective_end = max(0.0, duration - pad)
+
+            _start = float(start_sec) if start_sec is not None else float(getattr(self.cfg, "start_sec", 0.0))
+
+            cfg_end = getattr(self.cfg, "end_sec", None)
+            desired_end = float(end_sec) if end_sec is not None else (float(cfg_end) if cfg_end is not None else None)
+            _end = effective_end if desired_end is None else min(desired_end, effective_end)
+
             ts = sample_every_seconds(
-                duration=float(info.get("duration", 0.0)),
-                every_sec=float(every_sec if every_sec is not None else getattr(self.cfg, "every_sec", 1.0)),
+                duration=duration,
+                every_sec=float(every_sec) if every_sec is not None else float(getattr(self.cfg, "every_sec", 1.0)),
                 scenes=scenes,
-                start_sec=float(start_sec if start_sec is not None else getattr(self.cfg, "start_sec", 0.0)),
-                end_sec=(float(end_sec) if end_sec is not None else getattr(self.cfg, "end_sec", None)),
+                start_sec=_start,
+                end_sec=_end,
             )
         else:
-            fpp = frames_per_scene if frames_per_scene is not None else self.cfg.frames_per_scene
             ts = sample_timestamps(
                 scenes,
                 frames_per_scene=fpp,
@@ -198,7 +204,6 @@ class Frameko:
             )
             extracted.append(rec)
 
-            # write frame metadata immediately (replaces store.insert_frame)
             self._append_jsonl(
                 self.frames_jsonl,
                 {
@@ -216,7 +221,6 @@ class Frameko:
         if not extracted:
             return video_id
 
-        # OPTIONAL: embed + upsert into backend
         if getattr(self, "backend", None) is not None:
             embedder = self._get_embedder()
             paths = [r.frame_path for r in extracted]
